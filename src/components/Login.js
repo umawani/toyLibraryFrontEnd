@@ -18,6 +18,9 @@ class Login extends Component {
     this.fetchUser();
   }
 
+  componentDidUpdate(){
+  }
+
   fetchUser() {
     this.props.login();
   }
@@ -32,9 +35,11 @@ class Login extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.setState({
-      navigate: true,
-    });
+    const formdata = {
+      email : this.state.email,
+      password : this.state.password
+    }
+    this.props.login(formdata);
     console.log(`Email: ${this.state.email} Password: ${this.state.password}`);
   };
 
@@ -46,6 +51,7 @@ class Login extends Component {
 
   render() {
     const { email, password, navigate } = this.state;
+    const loggedIn = this.props.loggedIn;
     return (
       <Container>
         <Row>
@@ -101,8 +107,8 @@ class Login extends Component {
           </Col>
           <Col></Col>
         </Row>
-        {navigate && <Navigate to="/product-list" replace="true" />}
-        {/* {navigate && <Navigate to="/register" replace="true" />} */}
+        {loggedIn && <Navigate to="/product-list" replace="true" />}
+        {navigate && <Navigate to="/register" replace="true" />}
       </Container>
     );
   }
@@ -110,12 +116,13 @@ class Login extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: () => dispatch(login()),
+    login: (formdata) => dispatch(login(formdata)),
   };
 };
 
 const mapStateToProps = ({ userReducer }) => ({
   userData: userReducer.userData,
+  loggedIn: userReducer.loggedIn,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

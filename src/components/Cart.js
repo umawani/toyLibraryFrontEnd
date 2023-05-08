@@ -1,21 +1,35 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Card, Button, Alert } from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
+import { connect } from "react-redux";
+import { removeFromCart } from "../redux/actions/user_action";
 
 class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cartItems: JSON.parse(localStorage.getItem("cartItems")) || [],
+      cartItems: this.props.userData ? this.props.userData.cart ? this.props.userData.cart : [] : [],
     };
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(this.props.userData !== prevProps.userData){
+      this.setState({
+        cartItems: this.props.userData ? this.props.userData.cart ? this.props.userData.cart : [] : [],
+      })
+    }
+  }
+
+
+
   handleRemoveFromCart = (id) => {
-    const { cartItems } = this.state;
-    const newCartItems = cartItems.filter((item) => item.id !== id);
-    this.setState({ cartItems: newCartItems });
-    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
-  };
+    // const { cartItems } = this.state;
+    // const newCartItems = cartItems.filter((item) => item.id !== id);
+    // this.setState({ cartItems: newCartItems });
+    // localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    const userId = this.props.userData.id;
+    this.props.removeFromCart(userId, id);
+  }
 
   render() {
     const { cartItems } = this.state;
@@ -60,4 +74,16 @@ class Cart extends Component {
   }
 }
 
-export default Cart;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeFromCart: (userId, productId) => dispatch(removeFromCart(userId, productId)),
+  };
+};
+
+const mapStateToProps = ({ userReducer }) => ({
+  userData: userReducer.userData,
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);

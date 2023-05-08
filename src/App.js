@@ -13,11 +13,11 @@ function App() {
     <div className="wrapper">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/product-list" element={<ProductList />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/" Component={Login} />
+          <Route path="/register" Component={Register} />
+          <Route path="/product-list" Component={ProductList} />
+          <Route path="/cart" Component={Cart} />
+          <Route path="/add-product" Component={AddProduct} />
         </Routes>
       </BrowserRouter>
     </div>

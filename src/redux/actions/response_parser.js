@@ -1,20 +1,11 @@
 import { SYSTEM_ALERT } from "../types";
 
 export const parseAPIReponse = (type, res, classIns) => (dispatch) => {
+  console.log(res);
   if (res) {
-    if (res.status == 200) {
-      dispatch({
-        type: SYSTEM_ALERT,
-        payload: {
-          alertType: "success",
-          msg: res.message,
-          flag: true,
-          isLoading: false,
-          classIns,
-        },
-      });
+    if (res.statusCode == 200) {
       dispatch({ type: type, payload: res, msg: res.message });
-    } else if (res.status === 400 && res.fieldErrors) {
+    } else if (res.statusCode === 400 && res.fieldErrors) {
       dispatch({
         type: SYSTEM_ALERT,
         payload: {
@@ -26,10 +17,10 @@ export const parseAPIReponse = (type, res, classIns) => (dispatch) => {
         },
       });
     } else if (
-      res.status === 400 ||
-      res.status === 404 ||
-      res.status === 409 ||
-      res.status === 417
+      res.statusCode === 400 ||
+      res.statusCode === 404 ||
+      res.statusCode === 409 ||
+      res.statusCode === 417
     ) {
       dispatch({
         type: SYSTEM_ALERT,
@@ -42,10 +33,10 @@ export const parseAPIReponse = (type, res, classIns) => (dispatch) => {
         },
       });
     } else if (
-      res.status === 400 ||
-      res.status === 404 ||
-      res.status === 409 ||
-      res.status === 417
+      res.statusCode === 400 ||
+      res.statusCode === 404 ||
+      res.statusCode === 409 ||
+      res.statusCode === 417
     ) {
       dispatch({
         type: SYSTEM_ALERT,
@@ -57,7 +48,7 @@ export const parseAPIReponse = (type, res, classIns) => (dispatch) => {
           classIns,
         },
       });
-    } else if (res.status === 500) {
+    } else if (res.statusCode === 500) {
       dispatch({
         type: SYSTEM_ALERT,
         payload: {
@@ -68,7 +59,7 @@ export const parseAPIReponse = (type, res, classIns) => (dispatch) => {
           classIns,
         },
       });
-    } else if (res.status === 417) {
+    } else if (res.statusCode === 417) {
       dispatch({
         type: SYSTEM_ALERT,
         payload: {
@@ -81,8 +72,8 @@ export const parseAPIReponse = (type, res, classIns) => (dispatch) => {
       });
     } else if (
       res.statusCode === 401 ||
-      res.status === 403 ||
-      res.status === 406
+      res.statusCode === 403 ||
+      res.statusCode === 406
     ) {
       window.location.href = "/";
     }

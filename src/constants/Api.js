@@ -5,5 +5,6 @@ const baseUrl = REACT_APP_API_BASE_URL;
 export const endpoints = {
   baseUrl: baseUrl,
 
-  login: baseUrl + "/get",
+  login: baseUrl + "user/login",
+  removeFromCart: baseUrl + "user/removeFromCart/"
 };
