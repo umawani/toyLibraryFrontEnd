@@ -23,10 +23,6 @@ class Cart extends Component {
 
 
   handleRemoveFromCart = (id) => {
-    // const { cartItems } = this.state;
-    // const newCartItems = cartItems.filter((item) => item.id !== id);
-    // this.setState({ cartItems: newCartItems });
-    // localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     const userId = this.props.userData.id;
     this.props.removeFromCart(userId, id);
   }

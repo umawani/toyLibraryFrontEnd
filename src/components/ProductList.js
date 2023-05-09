@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
+import {getProductList} from "../redux/actions/product_action";
+import {addToCart, removeFromCart} from "../redux/actions/user_action";
+import { connect } from "react-redux";
 
 class ProductList extends Component {
   constructor(props) {
@@ -11,26 +14,26 @@ class ProductList extends Component {
     };
   }
 
+  componentDidMount(){
+    this.props.getProductList();
+  }
+
   handleAddToCart = (id) => {
-    const { cartItems, productItems } = this.state;
-    const productToAdd = productItems.find((product) => product.id === id);
-    if (cartItems.find((item) => item.id === id)) {
-      console.log("this product already available in cart");
-      return;
-    }
-    const newCartItems = [...cartItems, productToAdd];
-    this.setState({ cartItems: newCartItems });
-    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    const userId = this.props.userData.id;
+    this.props.addToCart(userId, id);
+  };
+
+  handleRemoveFromCart = (id) => {
+    const userId = this.props.userData.id;
+    this.props.removeFromCart(id, userId);
   };
 
   render() {
-    const { cartItems, productItems } = this.state;
-
     return (
       <Container>
         <NavigationBar />
         <Row>
-          {productItems.map((product) => (
+          {this.props.productList.map((product) => (
             <Col xs={12} sm={6} md={4} lg={3} key={product.id}>
               <Card className="my-3">
                 <Card.Img
@@ -44,12 +47,26 @@ class ProductList extends Component {
                 <Card.Body>
                   <Card.Title>{product.name}</Card.Title>
                   <Card.Text>{product.description}</Card.Text>
-                  <Button
-                    variant="primary"
-                    onClick={() => this.handleAddToCart(product.id)}
-                  >
-                    Add to Cart
-                  </Button>
+                  {
+                    this.props.userData.cart.some(p => p.id === product.id) ? (
+                      <Button
+                        variant="danger"
+                        onClick={() => this.handleRemoveFromCart(product.id)}
+                      >
+                        Remove from Cart
+                      </Button>
+                    )
+                    :
+                      (
+                        <Button
+                          variant="primary"
+                          onClick={() => this.handleAddToCart(product.id)}
+                        >
+                          Add to Cart
+                        </Button>
+                      )
+                  }
+                  
                 </Card.Body>
               </Card>
             </Col>
@@ -60,4 +77,18 @@ class ProductList extends Component {
   }
 }
 
-export default ProductList;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getProductList: () => dispatch(getProductList()),
+    addToCart: (productId, userId) => dispatch(addToCart(productId, userId)),
+    removeFromCart: (productId, userId) => dispatch(removeFromCart(productId, userId)),
+  };
+};
+
+const mapStateToProps = ({ productReducer, userReducer }) => ({
+  productList: productReducer.productList, 
+  userData: userReducer.userData,
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductList);

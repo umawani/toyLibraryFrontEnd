@@ -6,5 +6,7 @@ export const endpoints = {
   baseUrl: baseUrl,
 
   login: baseUrl + "user/login",
-  removeFromCart: baseUrl + "user/removeFromCart/"
+  addToCart: baseUrl + "user/addToCart/",
+  removeFromCart: baseUrl + "user/removeFromCart/",
+  getProductList: baseUrl + "product/list",
 };
