@@ -24,6 +24,12 @@ class NavigationBar extends Component {
     })
   }
 
+  onLogoutClick = () => {
+    this.setState({
+      logoutNavigate: true,
+    })
+  }
+
   componentDidMount() {
   }
 
@@ -38,27 +44,34 @@ class NavigationBar extends Component {
   render() {
     const cartNavigate = this.state.cartNavigate;
     const productNav = this.state.productNav;
+    const logoutNavigate = this.state.logoutNavigate;
     return (
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="#">Toy Library</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link key="home" href="#">
-              Home
-            </Nav.Link>
             <Nav.Link key="product" onClick={this.onProductClick}>
               Products
             </Nav.Link>
           </Nav>
+          {
+            this.props.userData.userType === "ADMIN" ? "" : 
           <Nav>
             <Button key="cart" variant="primary" onClick={this.onCartClick}>
               Cart ({this.state.cartItemsCount})
             </Button>
           </Nav>
+          }
+          <Nav className="ms-auto">
+            <Button key="logout" variant="danger" onClick={this.onLogoutClick}>
+              Logout
+            </Button>
+          </Nav>
         </Navbar.Collapse>
         {cartNavigate && <Navigate to="/cart" replace="true" />}
         {productNav && <Navigate to="/product-list" replace="true" />}
+        {logoutNavigate && <Navigate to="/" replace="true" />}
       </Navbar>
     );
   }
