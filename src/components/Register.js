@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import "../App.css";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import {
+  register,
+  completeRegistration
+} from "../redux/actions/user_action";
+import { connect } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 class Register extends Component {
   constructor(props) {
@@ -9,14 +15,24 @@ class Register extends Component {
       email: "",
       password: "",
       name: "",
+      navigate: false,
     };
+  }
+
+  componentDidUpdate(){
+    if(this.props.registered){
+      this.props.completeRegistration();
+      this.setState({
+        navigate:true
+      })
+    }
   }
 
   handleEmailChange = (event) => {
     this.setState({ email: event.target.value });
   };
 
-  handleTextChange = (event) => {
+  handleNameChange = (event) => {
     this.setState({ name: event.target.value });
   };
 
@@ -26,12 +42,20 @@ class Register extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+    const formdata = {
+      name: this.state.name,
+      email : this.state.email,
+      password : this.state.password,
+    }
+    this.props.register(formdata);
     console.log(`Email: ${this.state.email} Password: ${this.state.password}`);
   };
 
   render() {
     const { email, password, name } = this.state;
+    const navigate = this.state.navigate
     return (
+      <>
       <Container>
         <Row>
           <Col></Col>
@@ -84,8 +108,21 @@ class Register extends Component {
           <Col></Col>
         </Row>
       </Container>
+      {navigate && <Navigate to="/" replace="true"/>}
+      </>
     );
   }
 }
 
-export default Register;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    register : (formdata) => dispatch(register(formdata)),
+    completeRegistration : () => dispatch(completeRegistration()),
+  };
+};
+
+const mapStateToProps = ({ userReducer }) => ({
+  registered: userReducer.registered,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
