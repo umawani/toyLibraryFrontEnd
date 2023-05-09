@@ -15,13 +15,12 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.fetchUser();
   }
 
   componentDidUpdate(){
   }
 
-  fetchUser() {
+  fetchUser = () => {
     this.props.login();
   }
 

@@ -4,6 +4,7 @@ import NavigationBar from "./NavigationBar";
 import {getProductList, addProduct, completeCreateProduct} from "../redux/actions/product_action";
 import {addToCart, removeFromCart} from "../redux/actions/user_action";
 import { connect } from "react-redux";
+import ProductHistory from "./ProductHistory";
 
 class ProductList extends Component {
   constructor(props) {
@@ -48,6 +49,20 @@ class ProductList extends Component {
 
   handleClose() {
     this.setState({ showModal: false });
+  }
+
+  handleShowHistory = (id) => {
+    this.setState({
+      historyId : id,
+      showHistory : true,
+    })
+  }
+
+  handleHistoryClose = () => {
+    this.setState({
+      historyId: null,
+      showHistory : false,
+    })
   }
 
   handleSubmit = (event) => {
@@ -117,7 +132,13 @@ class ProductList extends Component {
                             Add to Cart
                           </Button>
                         )
-                          : ""
+                          : 
+                          <Button
+                            variant="primary"
+                            onClick={() => this.handleShowHistory(product.id)}
+                          >
+                            Show Booking History
+                          </Button>
                       } 
                   
                 </Card.Body>
@@ -173,6 +194,9 @@ class ProductList extends Component {
               Save
             </Button>
           </Modal.Footer>
+        </Modal>
+        <Modal show={this.state.showHistory} onHide={this.handleHistoryClose}>
+              <ProductHistory id={this.state.historyId} />
         </Modal>
       </Container>
     );

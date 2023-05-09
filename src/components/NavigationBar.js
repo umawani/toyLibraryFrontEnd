@@ -50,18 +50,20 @@ class NavigationBar extends Component {
         <Navbar.Brand href="#">Toy Library</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
+        {
+            this.props.userData.userType === "ADMIN" ? "" :
+            <>
           <Nav className="mr-auto">
             <Nav.Link key="product" onClick={this.onProductClick}>
               Products
             </Nav.Link>
           </Nav>
-          {
-            this.props.userData.userType === "ADMIN" ? "" : 
+           
           <Nav>
             <Button key="cart" variant="primary" onClick={this.onCartClick}>
               Cart ({this.state.cartItemsCount})
             </Button>
-          </Nav>
+          </Nav></>
           }
           <Nav className="ms-auto">
             <Button key="logout" variant="danger" onClick={this.onLogoutClick}>
