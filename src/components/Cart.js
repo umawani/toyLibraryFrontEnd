@@ -48,7 +48,7 @@ class Cart extends Component {
                 <Card.Img
                   variant="top"
                   src={
-                    item.image ? item.image : "https://via.placeholder.com/150"
+                    item.image ? `data:image/jpeg;base64,${item.image}` : "https://via.placeholder.com/150"
                   }
                 />
                 <Card.Body>
