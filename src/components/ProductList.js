@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Card, Button, Modal,Form } from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
-import {getProductList, addProduct, completeCreateProduct} from "../redux/actions/product_action";
+import {getProductList, addProduct, completeCreateProduct, editProduct} from "../redux/actions/product_action";
 import {addToCart, removeFromCart} from "../redux/actions/user_action";
 import { connect } from "react-redux";
 import ProductHistory from "./ProductHistory";
@@ -16,6 +16,8 @@ class ProductList extends Component {
       productName: "",
       imageFile: null,
       imageUrl: null,
+      mode: "",
+      productId: null,
     };
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -44,11 +46,18 @@ class ProductList extends Component {
   };
 
   handleShow() {
-    this.setState({ showModal: true });
+    this.setState({ showModal: true, mode: "ADD" });
   }
 
   handleClose() {
-    this.setState({ showModal: false });
+    this.setState({ 
+      showModal: false, 
+      productName: "",
+      imageFile: "",
+      imageUrl: "",
+      mode: "",
+      productId: null,
+    });
   }
 
   handleShowHistory = (id) => {
@@ -71,7 +80,13 @@ class ProductList extends Component {
       name : this.state.productName,
       file : this.state.imageFile,
     }
-    this.props.addProduct(formdata);
+    if(this.state.mode === "ADD"){
+      this.props.addProduct(formdata);
+    }
+    else{
+      formdata["id"] = this.state.productId;
+      this.props.editProduct(formdata);
+    }
     this.handleClose();
   };
 
@@ -90,6 +105,15 @@ class ProductList extends Component {
       });
     };
     reader.readAsDataURL(imageFile);
+  }
+
+  handleProductEdit = (productId, name, image) => {
+    this.setState({
+      showModal : true,
+      mode: "EDIT",
+      productName: name,
+      productId: productId,
+    })
   }
 
   render() {
@@ -113,6 +137,8 @@ class ProductList extends Component {
                   <Card.Title>{product.name}</Card.Title>
                   <Card.Text>{product.description}</Card.Text>
                   {this.props.userData.userType === "CUSTOMER" ? 
+                      product.bookedUntil ? 
+                        "Product Booked Until " + product.bookedUntil:
                       this.props.userData.cart.some(p => p.id === product.id) ? (
                         <Button
                           variant="danger"
@@ -131,12 +157,21 @@ class ProductList extends Component {
                           </Button>
                         )
                           : 
-                          <Button
-                            variant="primary"
-                            onClick={() => this.handleShowHistory(product.id)}
-                          >
-                            Show Booking History
-                          </Button>
+                          <>
+                            <Button
+                              variant="primary"
+                              onClick={() => this.handleShowHistory(product.id)}
+                            >
+                              Show Booking History
+                            </Button>
+                            <Button className="rounded-circle" onClick={() => this.handleProductEdit(product.id, product.name, product.image)} variant="light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+</svg>
+              </Button>
+                          </>
+
                       } 
                   
                 </Card.Body>
@@ -161,7 +196,7 @@ class ProductList extends Component {
 
         <Modal show={this.state.showModal} onHide={this.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Add Product</Modal.Title>
+            <Modal.Title>{this.state.mode === "ADD" ? "Add" : "Edit"}  Product</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Form onSubmit={this.handleSubmit}>
@@ -196,6 +231,7 @@ class ProductList extends Component {
         <Modal show={this.state.showHistory} onHide={this.handleHistoryClose}>
               <ProductHistory id={this.state.historyId} />
         </Modal>
+        
       </Container>
     );
   }
@@ -208,6 +244,7 @@ const mapDispatchToProps = (dispatch) => {
     removeFromCart: (productId, userId) => dispatch(removeFromCart(productId, userId)),
     addProduct: (formdata) => dispatch(addProduct(formdata)),
     completeCreateProduct: () => dispatch(completeCreateProduct()),
+    editProduct: (formdata) => dispatch(editProduct(formdata)),
   };
 };
 

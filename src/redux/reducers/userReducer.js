@@ -1,15 +1,20 @@
+import { userCheckout } from "../actions/user_action";
 import { 
   LOGIN,
   REMOVE_FROM_CART,
   ADD_TO_CART,
   REGISTER,
   COMPLETE_REGISTRATION,
+  LOGOUT,
+  USER_CHECKOUT,
+  COMPLETE_CHECKOUT,
  } from "../types";
 
 const initialState = {
   userData: "",
   loggedIn: false,
   registered: false,
+  checkedOut: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -39,6 +44,22 @@ const userReducer = (state = initialState, action) => {
       return{
         ...state,
         registered : false,
+      }
+    case LOGOUT:
+      return{
+        ...state,
+        loggedIn: false,
+      }
+    case USER_CHECKOUT:
+      return{
+        ...state,
+        checkedOut: true,
+        userData: action.payload.body
+      }
+    case COMPLETE_CHECKOUT:
+      return{
+        ...state,
+        checkedOut: false,
       }
     default:
       return state;

@@ -3,6 +3,7 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Navigate } from "react-router-dom";
+import {logout} from "../redux/actions/user_action";
 
 class NavigationBar extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class NavigationBar extends Component {
   }
 
   onLogoutClick = () => {
+    this.props.logout();
     this.setState({
       logoutNavigate: true,
     })
@@ -81,6 +83,7 @@ class NavigationBar extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    logout: () => dispatch(logout())
   };
 };
 

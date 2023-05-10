@@ -2,6 +2,7 @@ import {
     GET_PRODUCT_LIST,
     ADD_PRODUCT,
     COMPLETE_PRODUCT_CREATE,
+    EDIT_PRODUCT
    } from "../types";
   
   const initialState = {
@@ -20,6 +21,11 @@ import {
             return{
                 ...state,
                 created : true
+            }
+        case EDIT_PRODUCT:
+            return{
+                ...state,
+                created: true,
             }
         case COMPLETE_PRODUCT_CREATE:
             return{
