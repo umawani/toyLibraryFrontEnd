@@ -67,12 +67,9 @@ class ProductList extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    // You can perform the submit action here, such as calling an API or adding the product to the state
-    console.log("Product Name:", this.state.productName);
-    console.log("Image file:", this.state.imageFile);
-    console.log("Image URL:", this.state.imageUrl);
     const formdata = {
       name : this.state.productName,
+      file : this.state.imageFile,
     }
     this.props.addProduct(formdata);
     this.handleClose();
@@ -101,13 +98,14 @@ class ProductList extends Component {
         <NavigationBar />
         <Row>
           {this.props.productList.map((product) => (
+            console.log(product.image),
             <Col xs={12} sm={6} md={4} lg={3} key={product.id}>
               <Card className="my-3">
                 <Card.Img
                   variant="top"
                   src={
                     product.image
-                      ? product.image
+                      ? `data:image/jpeg;base64,${product.image}`
                       : "https://via.placeholder.com/150"
                   }
                 />
@@ -158,7 +156,7 @@ class ProductList extends Component {
                 <Card.Title>Add New Product</Card.Title>
               </Card>
             </Col>
-            : ""}
+           : ""} 
         </Row>
 
         <Modal show={this.state.showModal} onHide={this.handleClose}>
